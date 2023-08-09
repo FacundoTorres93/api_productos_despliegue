@@ -1,10 +1,16 @@
 const express = require("express");
 const productosRouter = require("./routes/productos");
 const errorHandler = require("./middlewares/errorHandler");
+const mongoose = require("mongoose");
 
 const { auth } = require("express-oauth2-jwt-bearer");
 
 require("dotenv").config();
+
+mongoose.connect(process.env.MONGO_URL, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
 
 const oauthCheck = auth({
   audience: process.env.OAUTH_AUDIENCE,
@@ -29,7 +35,7 @@ app.get("/health", (req, res) => {
 
 
 // Rutas de productos
-app.use("/api/productos",oauthCheck, productosRouter);
+app.use("/api/productos", productosRouter);
 
 app.use(errorHandler);
 
